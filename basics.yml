@@ -1,0 +1,25 @@
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  pre_tasks:
+    - name: install aptitude
+      raw: sudo apt-get -y update && sudo apt-get -y install aptitude
+  roles:
+    - hswong3i.apt
+    - hswong3i.hostname
+    - hswong3i.locales
+    - hswong3i.tzdata
+    - hswong3i.ntp
+    - role: hswong3i.ufw
+      ufw_interface:
+        - { interface: "lo", direction: "in", rule: "allow" }
+      ufw_from_ip:
+        - { from_ip: "224.0.0.0/4", rule: "allow" }
+      ufw_to_port:
+        - { to_port: "22", proto: "tcp", rule: "allow" }
+        - { to_port: "1024:65535", proto: "tcp", rule: "allow" }
+      ufw_direction:
+        - { direction: "incoming", policy: "deny" }
+        - { direction: "outgoing", policy: "allow" }
+        - { direction: "routed", policy: "allow" }

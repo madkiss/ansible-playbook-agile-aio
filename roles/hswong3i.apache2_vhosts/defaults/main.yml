@@ -1,0 +1,43 @@
+---
+# defaults file for hswong3i.apache2_vhosts
+
+# required variables
+apache2_vhosts_gid: ~
+apache2_vhosts_hash_salt: ~
+apache2_vhosts_id: ~
+apache2_vhosts_pass: ~
+apache2_vhosts_server_name: ~
+apache2_vhosts_uid: ~
+apache2_vhosts_user: ~
+
+# basic vhosts information
+apache2_vhosts_http_port: "80"
+apache2_vhosts_https_port: "443"
+apache2_vhosts_server_admin: "webmaster@{{ apache2_vhosts_server_name }}"
+apache2_vhosts_server_alias: []
+
+# document root related
+apache2_vhosts_base: "{{ apache2_vhosts_home }}"
+apache2_vhosts_document_root: "{{ apache2_vhosts_base }}/public_html"
+apache2_vhosts_home: "/home/{{ apache2_vhosts_user }}"
+
+# log related
+apache2_vhosts_custom_log: "/var/log/apache2/vhosts/{{ apache2_vhosts_server_name }}_access.log"
+apache2_vhosts_error_log: "/var/log/apache2/vhosts/{{ apache2_vhosts_server_name }}_error.log"
+
+# ssl related
+apache2_vhosts_ssl_engine: ~
+apache2_vhosts_redirect: "/ https://{{ apache2_vhosts_server_name }}"
+apache2_vhosts_ssl_certificate_chain_file: ~
+apache2_vhosts_ssl_certificate_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+apache2_vhosts_ssl_certificate_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
+
+# proxy related
+apache2_vhosts_proxy_pass: ~
+apache2_vhosts_proxy_pass_reverse: ~
+apache2_vhosts_proxy_preserve_host: ~
+apache2_vhosts_proxy_request: ~
+apache2_vhosts_proxy_via: ~
+
+# file handler related
+apache2_vhosts_handler_php: ~

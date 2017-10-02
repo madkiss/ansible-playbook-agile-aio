@@ -1,0 +1,22 @@
+# {{ ansible_managed }}
+
+driftfile {{ ntp_driftfile }}
+{% if ntp_statsdir and ntp_statistics and ntp_filegen %}
+statsdir {{ ntp_statsdir }}
+statistics {{ ntp_statistics }}
+{%     for filegen in ntp_filegen %}
+filegen {{ filegen }}
+{%     endfor %}
+{% endif %}
+
+# Specify one or more NTP servers.
+{% for server in ntp_server %}
+server {{ server }}
+{% endfor %}
+
+# Access control configuration; see /usr/share/doc/ntp-doc/html/accopt.html for
+# details.  The web page <http://support.ntp.org/bin/view/Support/AccessRestrictions>
+# might also be helpful.
+{% for restrict in ntp_restrict %}
+restrict {{ restrict }}
+{% endfor %}

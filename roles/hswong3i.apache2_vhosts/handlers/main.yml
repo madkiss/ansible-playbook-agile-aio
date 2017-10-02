@@ -1,0 +1,9 @@
+---
+# handlers file for hswong3i.apache2_vhosts
+
+- name: restart apache2
+  service:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { name: "apache2", state: "restarted" }

@@ -1,0 +1,15 @@
+---
+# defaults file for hswong3i.mysql_vhosts
+
+# required variables
+mysql_vhosts_id: ~
+mysql_vhosts_user: ~
+mysql_vhosts_pass: ~
+
+# optional variables with default
+mysql_vhosts_collation: "utf8mb4_general_ci"
+mysql_vhosts_encoding: "utf8mb4"
+mysql_vhosts_privs: [
+  { host: "localhost", priv: "{{ mysql_vhosts_id }}.*:ALL,GRANT" },
+  { host: "%", priv: "{{ mysql_vhosts_id }}.*:ALL,GRANT" },
+]

@@ -1,0 +1,8 @@
+---
+# test file for hswong3i.apache2_vhosts
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - ansible-role-apache2
+    - ansible-role-apache2-vhosts

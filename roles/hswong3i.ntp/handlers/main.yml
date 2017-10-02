@@ -1,0 +1,9 @@
+---
+# handlers file for hswong3i.ntp
+
+- name: restart ntp
+  service:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { name: "ntp", state: "restarted" }

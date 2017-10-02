@@ -1,0 +1,8 @@
+﻿- include: basics.yml
+- include: java.yml
+- include: apache.yml
+- include: mysql.yml
+- include: jira.yml
+- include: confluence.yml
+- include: gitlab.yml
+- include: postfix.yml

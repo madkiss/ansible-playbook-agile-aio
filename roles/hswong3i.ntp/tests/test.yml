@@ -1,0 +1,7 @@
+---
+# test file for hswong3i.ntp
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - ansible-role-ntp

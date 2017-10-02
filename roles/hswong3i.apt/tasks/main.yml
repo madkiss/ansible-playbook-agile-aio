@@ -1,0 +1,46 @@
+---
+# tasks file for hswong3i.apt
+
+- name: include release specific variables
+  include_vars: "{{ ansible_distribution_release }}.yml"
+  tags: hswong3i.apt
+
+- name: apt-key add
+  apt_key:
+    url: "{{ item.url }}"
+    state: "{{ item.state }}"
+  with_items:  "{{ (_apt_key + apt_key) | unique }}"
+  tags: hswong3i.apt
+
+- name: apt-add-repository
+  apt_repository:
+    repo: "{{ item.repo }}"
+    state: "{{ item.state }}"
+    update_cache: "no"
+  with_items: "{{ (_apt_repository + apt_repository) | unique }}"
+  register: apt_repository_result
+  tags: hswong3i.apt
+
+- name: apt-get update
+  apt:
+    update_cache: "{{ item.update_cache }}"
+  with_items:
+    - { update_cache: "yes" }
+  when: apt_repository_result | changed
+  tags: hswong3i.apt
+
+- name: apt-get dist-upgrade
+  apt:
+    upgrade: "{{ item.upgrade }}"
+    cache_valid_time: "{{ item.cache_valid_time }}"
+    update_cache: "{{ item.update_cache }}"
+  with_items:
+    - { upgrade: "{{ apt_upgrade }}", cache_valid_time: "{{ apt_cache_valid_time }}", update_cache: "yes" }
+  tags: hswong3i.apt
+
+- name: apt-get install
+  apt:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items: "{{ (_apt + apt) | unique }}"
+  tags: hswong3i.apt

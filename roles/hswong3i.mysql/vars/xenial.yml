@@ -1,0 +1,41 @@
+---
+# vars file for hswong3i.mysql (xenial)
+
+_apt_repository: [
+  { state: "absent", repo: "deb [arch=amd64,i386,ppc64el] http://ftp.osuosl.org/pub/mariadb/repo/10.1/ubuntu xenial main" },
+  { state: "present", repo: "ppa:ondrej/mysql-5.7" },
+]
+_apt: [
+  { state: "absent", name: "mariadb-client" },
+  { state: "absent", name: "mariadb-client-10.0" },
+  { state: "absent", name: "mariadb-client-10.1" },
+  { state: "absent", name: "mariadb-client-5.5" },
+  { state: "absent", name: "mariadb-client-core-10.0" },
+  { state: "absent", name: "mariadb-client-core-10.1" },
+  { state: "absent", name: "mariadb-client-core-5.5" },
+  { state: "absent", name: "mariadb-server" },
+  { state: "absent", name: "mariadb-server-10.0" },
+  { state: "absent", name: "mariadb-server-10.1" },
+  { state: "absent", name: "mariadb-server-5.5" },
+  { state: "absent", name: "mariadb-server-core-10.0" },
+  { state: "absent", name: "mariadb-server-core-10.1" },
+  { state: "absent", name: "mariadb-server-core-5.5" },
+  { state: "absent", name: "mysql-client" },
+  { state: "absent", name: "mysql-client-5.5" },
+  { state: "absent", name: "mysql-client-5.6" },
+  { state: "absent", name: "mysql-client-core-5.5" },
+  { state: "absent", name: "mysql-client-core-5.6" },
+  { state: "absent", name: "mysql-server" },
+  { state: "absent", name: "mysql-server-5.5" },
+  { state: "absent", name: "mysql-server-5.6" },
+  { state: "absent", name: "mysql-server-core-5.5" },
+  { state: "absent", name: "mysql-server-core-5.6" },
+  { state: "latest", name: "automysqlbackup" },
+  { state: "latest", name: "libdbd-mysql-perl" },
+  { state: "latest", name: "mysql-client-5.7" },
+  { state: "latest", name: "mysql-client-core-5.7" },
+  { state: "latest", name: "mysql-server-5.7" },
+  { state: "latest", name: "mysql-server-core-5.7" },
+  { state: "latest", name: "mytop" },
+  { state: "latest", name: "python-mysqldb" },
+]

@@ -1,0 +1,33 @@
+---
+# tasks file for hswong3i.mysql_vhosts
+
+- name: create mysql user
+  mysql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    config_file: "{{ item.config_file }}"
+  with_items:
+    - { name: "{{ mysql_vhosts_user }}", password: "{{ mysql_vhosts_pass }}", config_file: "/root/.my.cnf" }
+  when: mysql_vhosts_pass is string
+  tags: hswong3i.mysql_vhosts
+
+- name: create mysql db
+  mysql_db:
+    name: "{{ item.name }}"
+    encoding: "{{ item.encoding }}"
+    collation: "{{ item.collation }}"
+    config_file: "{{ item.config_file }}"
+  with_items:
+    - { name: "{{ mysql_vhosts_id }}", encoding: "{{ mysql_vhosts_encoding }}", collation: "{{ mysql_vhosts_collation }}", config_file: "/root/.my.cnf" }
+  tags: hswong3i.mysql_vhosts
+
+- name: append privs for mysql user
+  mysql_user:
+    name: "{{ mysql_vhosts_user }}"
+    password: "{{ mysql_vhosts_pass }}"
+    host: "{{ item.host }}"
+    priv: "{{ item.priv }}"
+    append_privs: "yes"
+    config_file: "/root/.my.cnf"
+  with_items: "{{ mysql_vhosts_privs }}"
+  tags: hswong3i.mysql_vhosts

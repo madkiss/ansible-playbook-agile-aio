@@ -1,0 +1,44 @@
+# {{ ansible_managed }}
+LANG="{{ locales_lang }}"
+{% if locales_language %}
+LANGUAGE="{{ locales_language }}"
+{% endif %}
+{% if locales_lc.ctype %}
+LC_CTYPE="{{ locales_lc.ctype }}"
+{% endif %}
+{% if locales_lc.numeric %}
+LC_NUMERIC="{{ locales_lc.numeric }}"
+{% endif %}
+{% if locales_lc.time %}
+LC_TIME="{{ locales_lc.time }}"
+{% endif %}
+{% if locales_lc.collate %}
+LC_COLLATE="{{ locales_lc.collate }}"
+{% endif %}
+{% if locales_lc.monetary %}
+LC_MONETARY="{{ locales_lc.monetary }}"
+{% endif %}
+{% if locales_lc.messages %}
+LC_MESSAGES="{{ locales_lc.messages }}"
+{% endif %}
+{% if locales_lc.paper %}
+LC_PAPER="{{ locales_lc.paper }}"
+{% endif %}
+{% if locales_lc.name %}
+LC_NAME="{{ locales_lc.name }}"
+{% endif %}
+{% if locales_lc.address %}
+LC_ADDRESS="{{ locales_lc.address }}"
+{% endif %}
+{% if locales_lc.telephone %}
+LC_TELEPHONE="{{ locales_lc.telephone }}"
+{% endif %}
+{% if locales_lc.measurement %}
+LC_MEASUREMENT="{{ locales_lc.measurement }}"
+{% endif %}
+{% if locales_lc.identification %}
+LC_IDENTIFICATION="{{ locales_lc.identification }}"
+{% endif %}
+{% if locales_lc.all %}
+LC_ALL="{{ locales_lc.all }}"
+{% endif %}

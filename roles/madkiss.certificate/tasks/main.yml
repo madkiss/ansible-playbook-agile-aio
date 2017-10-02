@@ -1,0 +1,29 @@
+---
+# tasks file for madkiss.certificate
+
+- name: Install Key file
+  copy: 
+    src: files/key.pem.enc
+    dest: "{{ key }}"
+    owner: www-data
+    group: www-data
+    mode: 0440
+  tags: madkiss.certificate
+
+- name: Install certificate file
+  copy:
+    src: files/certificate.pem
+    dest: "{{ certificate }}"
+    owner: www-data
+    group: www-data
+    mode: 0440
+  tags: madkiss.certificate
+
+- name: Install certificate chain file
+  copy:
+    src: files/intermediate.pem
+    dest: "{{ chain_certificate }}"
+    owner: www-data
+    group: www-data
+    mode: 0440
+  tags: madkiss.certificate

@@ -1,0 +1,129 @@
+---
+# tasks file for hswong3i.mysql
+
+- name: include release specific variables
+  include_vars: "{{ ansible_distribution_release }}.yml"
+  tags: hswong3i.mysql
+
+- name: apt-add-repository
+  apt_repository:
+    repo: "{{ item.repo }}"
+    state: "{{ item.state }}"
+  with_items: "{{ _apt_repository }}"
+  tags: hswong3i.mysql
+
+- name: apt-get install
+  apt:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items: "{{ _apt }}"
+  notify: restart mysql
+  tags: hswong3i.mysql
+
+- name: start service
+  service:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { name: "mysql", state: "started" }
+  register: start_service_result
+  ignore_errors: yes
+  tags: hswong3i.mysql
+
+- name: disable mysql anonymous access
+  shell: |
+    sudo -i mysql -NBe "DELETE FROM mysql.user WHERE User = ''"
+  when:
+    - start_service_result.results[0].state == "started"
+  register: disable_anonymous_access_result
+  changed_when: disable_anonymous_access_result.rc != 0
+  ignore_errors: yes
+  tags: hswong3i.mysql
+
+- name: disable mysql root access from remote
+  shell: |
+    sudo -i mysql -NBe "DELETE FROM mysql.user WHERE User = 'root' AND Host <> 'localhost'"
+  when:
+    - start_service_result.results[0].state == "started"
+  register: disable_root_access_remote_result
+  changed_when: disable_root_access_remote_result.rc != 0
+  ignore_errors: yes
+  tags: hswong3i.mysql
+
+- name: setup mysql debian-sys-maint password
+  shell: |
+    sudo -i mysql -NBe 'ALTER USER "debian-sys-maint"@"localhost" IDENTIFIED WITH mysql_native_password BY "{{ mysql_root_pass }}"'
+  when: 
+    - start_service_result.results[0].state == "started"
+    - mysql_root_pass is string
+  register: setup_debian_sys_maint_password_result
+  changed_when: setup_debian_sys_maint_password_result.rc != 0
+  ignore_errors: yes
+  tags: hswong3i.mysql
+
+- name: copy templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - { src: "etc/mysql/debian.cnf.j2", dest: "/etc/mysql/debian.cnf",  owner: "root", group: "root", mode: "0600" }
+  when: 
+    - start_service_result.results[0].state == "started"
+    - mysql_root_pass is string
+    - setup_debian_sys_maint_password_result.rc == 0
+  ignore_errors: yes
+  tags: hswong3i.mysql
+
+- name: setup mysql root password
+  shell: |
+    sudo -i mysql -NBe 'ALTER USER "root"@"localhost" IDENTIFIED WITH mysql_native_password BY "{{ mysql_root_pass }}"'
+  when:
+    - start_service_result.results[0].state == "started"
+    - mysql_root_pass is string
+  register: setup_root_password_result
+  changed_when: setup_root_password_result.rc != 0
+  ignore_errors: yes
+  tags: hswong3i.mysql
+
+- name: copy templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - { src: "root/.my.cnf.j2", dest: "/root/.my.cnf",  owner: "root", group: "root", mode: "0600" }
+  when: 
+    - start_service_result.results[0].state == "started"
+    - mysql_root_pass is string
+    - setup_root_password_result.rc == 0
+  ignore_errors: yes
+  tags: hswong3i.mysql
+
+- name: copy templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - { src: "etc/mysql/conf.d/mysql.cnf.j2", dest: "/etc/mysql/conf.d/mysql.cnf",  owner: "root", group: "root", mode: "0644" }
+    - { src: "etc/mysql/conf.d/mysqldump.cnf.j2", dest: "/etc/mysql/conf.d/mysqldump.cnf",  owner: "root", group: "root", mode: "0644" }
+    - { src: "etc/mysql/mysql.conf.d/mysqld.cnf.j2", dest: "/etc/mysql/mysql.conf.d/mysqld.cnf",  owner: "root", group: "root", mode: "0644" }
+    - { src: "etc/mysql/mysql.conf.d/mysqld_safe_syslog.cnf.j2", dest: "/etc/mysql/mysql.conf.d/mysqld_safe_syslog.cnf",  owner: "root", group: "root", mode: "0644" }
+  notify: restart mysql
+  tags: hswong3i.mysql
+
+- name: enable service
+  service:
+    name: "{{ item.name }}"
+    enabled: "{{ item.enabled }}"
+  with_items:
+    - { name: "mysql", enabled: "yes" }
+  notify: restart mysql
+  tags: hswong3i.mysql

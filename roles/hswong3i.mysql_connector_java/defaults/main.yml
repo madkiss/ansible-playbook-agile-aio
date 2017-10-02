@@ -1,0 +1,12 @@
+---
+# defaults file for hswong3i.mysql_connector_java
+
+# required variables
+mysql_connector_java_dest: ~
+mysql_connector_java_user: ~
+
+# optional variables with default
+mysql_connector_java_archive: "mysql-connector-java-5.1.42.tar.gz"
+mysql_connector_java_checksum: "sha256:4d261f669f685cd9e1eb5683d03019466cb9e59a8b873efce1b623254ea29231"
+mysql_connector_java_jar: "mysql-connector-java-5.1.42-bin.jar"
+mysql_connector_java_url: "https://dev.mysql.com/get/Downloads/Connector-J/{{ mysql_connector_java_archive }}"

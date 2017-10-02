@@ -1,0 +1,26 @@
+---
+# defaults file for hswong3i.apt
+
+apt_cache_valid_time: "0"
+apt_upgrade: "no"
+apt_key: [
+#  { state: "present", url: "http://www.webmin.com/jcameron-key.asc" },
+]
+apt_repository: [
+#  { state: "present", repo: "deb http://archive.ubuntu.com/ubuntu/ trusty main" },
+#  { state: "present", repo: "deb http://archive.ubuntu.com/ubuntu/ trusty multiverse" },
+#  { state: "present", repo: "deb http://archive.ubuntu.com/ubuntu/ trusty restricted" },
+#  { state: "present", repo: "deb http://archive.ubuntu.com/ubuntu/ trusty universe" },
+#  { state: "present", repo: "deb-src http://archive.ubuntu.com/ubuntu/ trusty main" },
+#  { state: "present", repo: "deb-src http://archive.ubuntu.com/ubuntu/ trusty multiverse" },
+#  { state: "present", repo: "deb-src http://archive.ubuntu.com/ubuntu/ trusty restricted" },
+#  { state: "present", repo: "deb-src http://archive.ubuntu.com/ubuntu/ trusty universe" },
+]
+apt: [
+#  { state: "latest", name: "apt" },
+#  { state: "latest", name: "aptitude" },
+#  { state: "latest", name: "colordiff" },
+#  { state: "latest", name: "git" },
+#  { state: "latest", name: "git-flow" },
+#  { state: "latest", name: "vim" },
+]

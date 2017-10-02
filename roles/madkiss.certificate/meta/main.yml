@@ -1,0 +1,16 @@
+---
+
+galaxy_info:
+  author: Martin Gerhard Loschwitz
+  description: Role to roll out the Agile wildcard certificate
+  company: Martin Gerhard Loschwitz
+  license: MIT
+  min_ansible_version: 2.0
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+  galaxy_tags:
+    - system
+dependencies: []

@@ -1,0 +1,90 @@
+---
+# tasks file for hswong3i.apache2_vhosts
+
+- name: create group
+  group:
+    name: "{{ apache2_vhosts_user }}"
+    gid: "{{ apache2_vhosts_gid | default(None) or omit }}"
+  when: apache2_vhosts_pass is string and apache2_vhosts_hash_salt is string
+  notify: restart apache2
+  tags: hswong3i.apache2_vhosts
+
+- name: create user
+  user:
+    name: "{{ apache2_vhosts_user }}"
+    password: "{{ apache2_vhosts_pass | password_hash('sha512', apache2_vhosts_hash_salt) }}"
+    home: "{{ apache2_vhosts_home }}"
+    group: "{{ apache2_vhosts_user }}"
+    uid: "{{ apache2_vhosts_uid | default(None) or omit }}"
+    shell: "/bin/bash"
+  when: apache2_vhosts_pass is string and apache2_vhosts_hash_salt is string
+  notify: restart apache2
+  tags: hswong3i.apache2_vhosts
+
+- name: prepare file
+  file:
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { dest: "{{ apache2_vhosts_base }}", owner: "{{ apache2_vhosts_user }}", group: "{{ apache2_vhosts_user }}", mode: "0755", state: "directory" }
+    - { dest: "{{ apache2_vhosts_base }}/logs", owner: "{{ apache2_vhosts_user }}", group: "{{ apache2_vhosts_user }}", mode: "0755", state: "directory" }
+    - { dest: "{{ apache2_vhosts_document_root }}", owner: "{{ apache2_vhosts_user }}", group: "{{ apache2_vhosts_user }}", mode: "0755", state: "directory" }
+  when: apache2_vhosts_document_root is string
+  run_once: yes
+  notify: restart apache2
+  tags: hswong3i.apache2_vhosts
+
+- name: ensure log files with correct owner and group
+  copy:
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+    content: "{{ item.content }}"
+    force: "{{ item.force }}"
+  with_items:
+    - { dest: "{{ apache2_vhosts_custom_log }}", owner: "{{ apache2_vhosts_user }}", group: "www-data", mode: "0660", content: "", force: "no" }
+    - { dest: "{{ apache2_vhosts_error_log }}", owner: "{{ apache2_vhosts_user }}", group: "www-data", mode: "0660", content: "", force: "no" }
+  notify: restart apache2
+  tags: hswong3i.apache2_vhosts
+
+- name: copy templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - { src: "etc/apache2/sites-available/default.conf.j2", dest: "/etc/apache2/sites-available/{{ apache2_vhosts_server_name }}.conf", owner: "root", group: "root", mode: "0644" }
+    - { src: "etc/logrotate.d/default.conf.j2", dest: "/etc/logrotate.d/{{ apache2_vhosts_server_name }}.conf", owner: "root", group: "root", mode: "0644" }
+  notify: restart apache2
+  tags: hswong3i.apache2_vhosts
+
+- name: symlink file
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    state: "{{ item.state }}"
+  with_items:
+  - { src: "{{ apache2_vhosts_custom_log }}", dest: "{{ apache2_vhosts_base }}/logs/access.log",  owner: "{{ apache2_vhosts_user }}", group: "{{ apache2_vhosts_user }}", state: "link" }
+  - { src: "{{ apache2_vhosts_error_log }}", dest: "{{ apache2_vhosts_base }}/logs/error.log",  owner: "{{ apache2_vhosts_user }}", group: "{{ apache2_vhosts_user }}", state: "link" }
+  when: apache2_vhosts_document_root is string
+  run_once: yes
+  notify: restart apache2
+  tags: hswong3i.apache2_vhosts
+
+- name: a2ensite
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { src: "../sites-available/{{ apache2_vhosts_server_name }}.conf", dest: "/etc/apache2/sites-enabled/{{ apache2_vhosts_server_name }}.conf", state: "link" }
+  notify: restart apache2
+  tags: hswong3i.apache2_vhosts

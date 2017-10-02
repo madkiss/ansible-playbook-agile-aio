@@ -1,0 +1,6 @@
+---
+apache2_vhosts_hash_salt: "wi6Eereiwae7phae"
+apache2_vhosts_id: "example"
+apache2_vhosts_pass: "xaivoo9Z"
+apache2_vhosts_server_name: "example.com"
+apache2_vhosts_user: "example"

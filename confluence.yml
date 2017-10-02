@@ -1,0 +1,27 @@
+﻿- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  roles:
+    - madkiss.certificate
+    - role: hswong3i.mysql_vhosts
+      apache2_vhosts_id: "confluence"
+      apache2_vhosts_user: "confluence"
+    - role: hswong3i.confluence
+      apache2_vhosts_user: "confluence"
+      apache2_vhosts_server_name: "confluence.example.net"
+      apache2_vhosts_home: "/var/lib/confluence"
+    - role: hswong3i.mysql_connector_java
+      mysql_connector_java_dest: "/usr/share/confluence/confluence/WEB-INF/lib"
+      apache2_vhosts_user: "confluence"
+    - role: hswong3i.ufw
+      ufw_to_port:
+        - { to_port: "{{ confluence_connector_port }}", proto: "tcp", rule: "allow" }
+        - { to_port: "{{ confluence_server_port }}", proto: "tcp", rule: "allow" }
+    - role: hswong3i.apache2_vhosts
+      apache2_vhosts_home: "/var/lib/confluence"
+      apache2_vhosts_id: "confluence"
+      apache2_vhosts_proxy_pass: "/   http://localhost:{{ confluence_connector_port }}/"
+      apache2_vhosts_proxy_pass_reverse: "/   http://localhost:{{ confluence_connector_port }}/"
+      apache2_vhosts_server_name: "confluence.example.net"
+      apache2_vhosts_user: "confluence"

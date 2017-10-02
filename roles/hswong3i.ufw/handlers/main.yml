@@ -1,0 +1,8 @@
+---
+# handlers file for hswong3i.ufw
+
+- name: reload ufw
+  ufw:
+    state: "{{ item.state }}"
+  with_items:
+    - { state: "reloaded" }

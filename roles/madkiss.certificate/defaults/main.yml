@@ -1,0 +1,6 @@
+---
+# defaults file for madkiss.certificate
+
+chain_certificate: "/etc/ssl/certs/intermediate.pem"
+certificate: "/etc/ssl/certs/certificate.pem"
+key: "/etc/ssl/private/key.pem"

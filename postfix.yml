@@ -1,0 +1,22 @@
+﻿- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  roles:
+    - Oefenweb.postfix
+  vars:
+    postfix_hostname: "devops.example.net"
+    postfix_mydestination:
+      - "{{ postfix_hostname }}"
+      - '$mydomain'
+      - localdomain
+      - localhost
+      - localhost.localdomain
+      - devops.example.net
+    postfix_smtpd_tls_cert_file: "/etc/ssl/certs/certificate.pem"
+    postfix_smtpd_tls_key_file: "/etc/ssl/private/key.pem"
+    postfix_smtpd_tls_CAfile: "/etc/ssl/certs/intermediate.pem"
+    postfix_relayhost: "mail-relay.example.net"
+    postfix_relayhost_port: "25"
+    postfix_relaytls: false
+    postfix_inet_protocols: "ipv4"

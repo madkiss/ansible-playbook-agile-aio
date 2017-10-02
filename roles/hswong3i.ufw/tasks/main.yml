@@ -1,0 +1,41 @@
+---
+# tasks file for hswong3i.ufw
+
+- name: apt-get install
+  apt:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { state: "latest", name: "ufw" }
+  notify: reload ufw
+  tags: hswong3i.ufw
+
+- name: copy templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items:
+  - { src: "etc/ufw/sysctl.conf.j2", dest: "/etc/ufw/sysctl.conf",  owner: "root", group: "root", mode: "0644" }
+  notify: reload ufw
+  tags: hswong3i.ufw
+
+- name: setup ufw
+  ufw:
+    direction: "{{ item.direction | default(None) or omit }}"
+    from_ip: "{{ item.from_ip | default(None) or omit }}"
+    from_port: "{{ item.from_port | default(None) or omit }}"
+    interface: "{{ item.interface | default(None) or omit }}"
+    logging: "{{ item.logging | default(None) or omit }}"
+    policy: "{{ item.policy | default(None) or omit }}"
+    proto: "{{ item.proto | default(None) or omit }}"
+    route: "{{ item.route | default(None) or omit }}"
+    rule: "{{ item.rule | default(None) or omit }}"
+    state: "{{ item.state | default(None) or omit }}"
+    to_ip: "{{ item.to_ip | default(None) or omit }}"
+    to_port: "{{ item.to_port | default(None) or omit }}"
+  with_items: "{{ ufw }}"
+  notify: reload ufw
+  tags: hswong3i.ufw

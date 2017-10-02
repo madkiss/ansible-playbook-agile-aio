@@ -1,0 +1,60 @@
+# {{ ansible_managed }}
+<VirtualHost *:{{ apache2_vhosts_http_port }}>
+{% if apache2_vhosts_ssl_engine %}
+    ServerAdmin             {{ apache2_vhosts_server_admin }}
+    ServerName              {{ apache2_vhosts_server_name }}
+    Redirect                {{ apache2_vhosts_redirect }}
+</VirtualHost>
+<VirtualHost *:{{ apache2_vhosts_https_port}}>
+    SSLEngine               {{ apache2_vhosts_ssl_engine }}
+    SSLCertificateFile      {{ apache2_vhosts_ssl_certificate_file }}
+{%     if apache2_vhosts_ssl_certificate_key_file %}
+    SSLCertificateKeyFile   {{ apache2_vhosts_ssl_certificate_key_file }}
+{%     endif %}
+{%     if apache2_vhosts_ssl_certificate_chain_file %}
+    SSLCertificateChainFile {{ apache2_vhosts_ssl_certificate_chain_file }}
+{%     endif %}
+{% endif %}
+    ServerAdmin             {{ apache2_vhosts_server_admin }}
+    ServerName              {{ apache2_vhosts_server_name }}
+{% for server_alias in apache2_vhosts_server_alias %}
+    ServerAlias             {{ server_alias }}
+{% endfor %}
+    ErrorLog                {{ apache2_vhosts_error_log }}
+    CustomLog               {{ apache2_vhosts_custom_log }} combined
+{% if apache2_vhosts_document_root is string %}
+    DocumentRoot            {{ apache2_vhosts_document_root }}
+    SetEnvIfNoCase          ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
+    <Directory {{ apache2_vhosts_document_root }}>
+        AllowOverride All
+        Require all granted
+    </Directory>
+{% endif %}
+{% if apache2_vhosts_handler_php is string %}
+    <FilesMatch ".+\.ph(p[3457]?|t|tml)$">
+        SetHandler          {{ apache2_vhosts_handler_php }}
+    </FilesMatch>
+    <FilesMatch ".+\.phps$">
+        Require all denied
+    </FilesMatch>
+    <FilesMatch "^\.ph(p[3457]?|t|tml|ps)$">
+        Require all denied
+    </FilesMatch>
+{% endif %}
+{% if apache2_vhosts_proxy_pass %}
+    ProxyPass               {{ apache2_vhosts_proxy_pass }}
+{% endif %}
+{% if apache2_vhosts_proxy_pass_reverse %}
+    ProxyPassReverse        {{ apache2_vhosts_proxy_pass_reverse }}
+{% endif %}
+{% if apache2_vhosts_proxy_via %}
+    ProxyVia                {{ apache2_vhosts_proxy_via }}
+{% endif %}
+{% if apache2_vhosts_proxy_request and apache2_vhosts_proxy_preserve_host %}
+    ProxyRequests           {{ apache2_vhosts_proxy_request }}
+    ProxyPreserveHost       {{ apache2_vhosts_proxy_preserve_host }}
+    <Proxy *>
+        Require all granted
+    </Proxy>
+{% endif %}
+</VirtualHost>

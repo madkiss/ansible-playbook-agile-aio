@@ -1,0 +1,9 @@
+---
+# handlers file for hswong3i.jira
+
+- name: restart jira
+  service:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { name: "jira", state: "restarted" }

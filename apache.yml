@@ -1,0 +1,10 @@
+﻿- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  roles:
+    - hswong3i.apache2
+    - role: hswong3i.ufw
+      ufw_to_port:
+        - { to_port: "{{ apache2_http_port }}", proto: "tcp", rule: "allow" }
+        - { to_port: "{{ apache2_https_port }}", proto: "tcp", rule: "allow" }

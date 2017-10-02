@@ -1,0 +1,8 @@
+---
+# test file for hswong3i.mysql_vhosts
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - ansible-role-mysql
+    - ansible-role-mysql-vhosts

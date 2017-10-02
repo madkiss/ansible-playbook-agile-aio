@@ -1,0 +1,20 @@
+---
+# tasks file for hswong3i.hostname
+
+- name: update hostname
+  hostname:
+    name: "{{ item.name }}"
+  with_items:
+    - { name: "{{ inventory_hostname_short }}" }
+  tags: hswong3i.hostname
+
+- name: copy templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - { src: "etc/hosts.j2", dest: "/etc/hosts",  owner: "root", group: "root", mode: "0644" }
+  tags: hswong3i.hostname

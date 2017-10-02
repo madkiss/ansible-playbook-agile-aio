@@ -1,0 +1,32 @@
+﻿- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  roles:
+    - madkiss.certificate
+    - role: geerlingguy.gitlab
+      gitlab_external_url: "https://gitlab.example.net"
+      gitlab_email_enabled: "true"
+      gitlab_email_from: "gitlab@devops.example.net"
+      gitlab_email_display_name: "GitLab"
+      gitlab_email_reply_to: "gitlab@devops.example.net"
+      gitlab_smtp_enable: "true"
+      gitlab_smtp_address: "localhost"
+      gitlab_smtp_port: "25"
+      gitlab_smtp_domain: "devops.example.net"
+      gitlab_smtp_enable_starttls_auto: "true"
+      gitlab_nginx_listen_port: 8100
+      gitlab_nginx_listen_https: "false"
+      gitlab_redirect_http_to_https: "false"
+      gitlab_unicorn_port: "8101"
+    - role: hswong3i.ufw
+      ufw_to_port:
+        - { to_port: "{{ gitlab_nginx_listen_port }}", proto: "tcp", rule: "allow" }
+    - role: hswong3i.apache2_vhosts
+      gitlab_nginx_listen_port: 8100
+      apache2_vhosts_home: "/opt/gitlab/embedded/service/gitlab-rails/public"
+      apache2_vhosts_id: "gitlab-www"
+      apache2_vhosts_proxy_pass: "/   http://localhost:{{ gitlab_nginx_listen_port }}/"
+      apache2_vhosts_proxy_pass_reverse: "/   http://localhost:{{ gitlab_nginx_listen_port }}"
+      apache2_vhosts_server_name: "gitlab.example.net"
+      apache2_vhosts_user: "gitlab-www"

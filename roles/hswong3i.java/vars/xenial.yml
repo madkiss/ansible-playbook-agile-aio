@@ -1,0 +1,10 @@
+---
+# vars file for hswong3i.java (xenial)
+
+_apt_repository: [
+  { state: "present", repo: "ppa:webupd8team/java" },
+]
+_apt: [
+  { state: "latest", name: "oracle-java8-installer" },
+  { state: "latest", name: "oracle-java8-set-default" },
+]

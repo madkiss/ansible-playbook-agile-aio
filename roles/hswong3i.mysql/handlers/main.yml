@@ -1,0 +1,9 @@
+---
+# handlers file for hswong3i.mysql
+
+- name: restart mysql
+  service:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { name: "mysql", state: "restarted" }
