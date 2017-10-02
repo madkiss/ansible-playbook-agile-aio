@@ -1,4 +1,4 @@
-﻿- include: basics.yml
+- include: basics.yml
 - include: java.yml
 - include: apache.yml
 - include: mysql.yml
